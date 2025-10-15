@@ -1,65 +1,33 @@
-# Компилятор и флаги
-CC = gcc
-CFLAGS = -Wall -Wextra -std=c2x -Iinclude
-DEBUG_FLAGS = -g -O0
-RELEASE_FLAGS = -O2
-
-# Directories
+APP = bin/app
 SRC_DIR = src
-INCLUDE_DIR = include
 OBJ_DIR = obj
-BIN_DIR = bin
+PKGCONF = conan
+INCLUDE_DIR = include
 
-# Automatically find all source files in src directory
-SOURCES = $(wildcard $(SRC_DIR)/*.c)
-OBJECTS = $(SOURCES:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
+SRC = $(wildcard $(SRC_DIR)/*.c)
+OBJ = $(SRC:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 
-# Target executable
-TARGET = $(BIN_DIR)/myprogram
+# Пути и флаги от raylib через pkg-config
+CFLAGS := -I$(INCLUDE_DIR) $(shell PKG_CONFIG_PATH=$(PKGCONF) pkg-config --cflags raylib 2>/dev/null)
+LDFLAGS := $(shell PKG_CONFIG_PATH=$(PKGCONF) pkg-config --libs raylib 2>/dev/null)
 
-# Default target
-all: $(TARGET)
+# Conan окружение
+CONAN_ENV = . $(PKGCONF)/conanbuild.sh
 
-# Create target executable
-$(TARGET): $(OBJECTS) | $(BIN_DIR)
-	$(CC) $(OBJECTS) -o $@
+# ==== Правила ====
+all: $(APP)
 
-# Compile source files to object files
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
-	$(CC) $(CFLAGS) -c $< -o $@
+$(APP): $(OBJ)
+	@echo "==> Linking $(APP)..."
+	@$(CONAN_ENV) && gcc $(OBJ) $(CFLAGS) $(LDFLAGS) -o $(APP)
 
-# Create directories if they don't exist
-$(BIN_DIR):
-	mkdir -p $(BIN_DIR)
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+	@mkdir -p $(OBJ_DIR)
+	@echo "==> Compiling $<"
+	@$(CONAN_ENV) && gcc -c $< $(CFLAGS) -o $@
 
-$(OBJ_DIR):
-	mkdir -p $(OBJ_DIR)
+run: all
+	@$(CONAN_ENV) && ./$(APP)
 
-# Debug build
-debug: CFLAGS += $(DEBUG_FLAGS)
-debug: all
-
-# Release build
-release: CFLAGS += $(RELEASE_FLAGS)
-release: all
-
-# Clean build artifacts
 clean:
-	rm -rf $(OBJ_DIR) $(BIN_DIR)
-
-# Print variables (useful for debugging)
-print:
-	@echo "SOURCES: $(SOURCES)"
-	@echo "OBJECTS: $(OBJECTS)"
-
-.PHONY: all debug release clean print
-
-# Help target
-help:
-	@echo "Available targets:"
-	@echo "  all     - Build the project (default)"
-	@echo "  debug   - Build with debug flags"
-	@echo "  release - Build with optimization flags"
-	@echo "  clean   - Remove build artifacts"
-	@echo "  print   - Show detected source files"
-	@echo "  help    - Show this help message"
+	rm -f $(APP) $(OBJ_DIR)/*.o

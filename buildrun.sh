@@ -1,1 +1,1 @@
-make && ./bin/myprogram
+make && ./bin/app
