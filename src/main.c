@@ -1,70 +1,48 @@
-#include "module.h"
 #include <raylib.h>
-#include <stdio.h>
-#include <stdlib.h>
 
-void cycle(int max) {
-  for (int i = 0; i < max; i++) {
-    printf("%i\n", i);
-  }
-}
+int main(void)
+{
+    // Initialization
+    //--------------------------------------------------------------------------------------
+    const int screenWidth = 800;
+    const int screenHeight = 450;
 
-struct foo *getStructPtr1() {
-  struct foo *x = (struct foo *)(calloc(1, sizeof(struct foo)));
-  x->a = 'b';
-  x->b = 32463;
-  return x;
-}
+    InitWindow(screenWidth, screenHeight, "raylib [core] example - input keys");
 
-struct foo *getStructPtr2() {
-  struct foo *x = (struct foo *)(malloc(sizeof(*x)));
-  *x = (struct foo){'a', 123};
-  return x;
-}
+    Vector2 ballPosition = { (float)screenWidth/2, (float)screenHeight/2 };
 
-int main(void) {
-  struct foo *(*operation)() = getStructPtr2;
-  struct foo *x = operation();
-  // printf("Hello, World!\n");
-  // sayHello();
-  printf("%c %d\n", x->a, x->b);
-  free(x);
-  // cycle(10);
-  // Initialization
-  //--------------------------------------------------------------------------------------
-  const int screenWidth = 800;
-  const int screenHeight = 450;
+    SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
+    //--------------------------------------------------------------------------------------
 
-  InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
+    // Main game loop
+    while (!WindowShouldClose())    // Detect window close button or ESC key
+    {
+        // Update
+        //----------------------------------------------------------------------------------
+        if (IsKeyDown(KEY_RIGHT)) ballPosition.x += 2.0f;
+        if (IsKeyDown(KEY_LEFT)) ballPosition.x -= 2.0f;
+        if (IsKeyDown(KEY_UP)) ballPosition.y -= 2.0f;
+        if (IsKeyDown(KEY_DOWN)) ballPosition.y += 2.0f;
+        //----------------------------------------------------------------------------------
 
-  SetTargetFPS(60); // Set our game to run at 60 frames-per-second
-  //--------------------------------------------------------------------------------------
+        // Draw
+        //----------------------------------------------------------------------------------
+        BeginDrawing();
 
-  // Main game loop
-  while (!WindowShouldClose()) // Detect window close button or ESC key
-  {
-    // Update
-    //----------------------------------------------------------------------------------
-    // TODO: Update your variables here
-    //----------------------------------------------------------------------------------
+            ClearBackground(RAYWHITE);
 
-    // Draw
-    //----------------------------------------------------------------------------------
-    BeginDrawing();
+            DrawText("move the ball with arrow keys", 10, 10, 20, DARKGRAY);
 
-    ClearBackground(RAYWHITE);
+            DrawCircleV(ballPosition, 50, MAROON);
 
-    DrawText("Congrats! You created your first window!", 190, 200, 20,
-             LIGHTGRAY);
+        EndDrawing();
+        //----------------------------------------------------------------------------------
+    }
 
-    EndDrawing();
-    //----------------------------------------------------------------------------------
-  }
+    // De-Initialization
+    //--------------------------------------------------------------------------------------
+    CloseWindow();        // Close window and OpenGL context
+    //--------------------------------------------------------------------------------------
 
-  // De-Initialization
-  //--------------------------------------------------------------------------------------
-  CloseWindow(); // Close window and OpenGL context
-  //--------------------------------------------------------------------------------------
-
-  return 0;
+    return 0;
 }
