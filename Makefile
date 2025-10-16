@@ -8,8 +8,8 @@ SRC = $(wildcard $(SRC_DIR)/*.c)
 OBJ = $(SRC:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 
 # Пути и флаги от raylib через pkg-config
-CFLAGS := -I$(INCLUDE_DIR) $(shell PKG_CONFIG_PATH=$(PKGCONF) pkg-config --cflags raylib 2>/dev/null)
-LDFLAGS := $(shell PKG_CONFIG_PATH=$(PKGCONF) pkg-config --libs raylib 2>/dev/null)
+CFLAGS := -I$(INCLUDE_DIR) $(shell PKG_CONFIG_PATH=$(PKGCONF) pkg-config --cflags cjson raylib 2>/dev/null)
+LDFLAGS := $(shell PKG_CONFIG_PATH=$(PKGCONF) pkg-config --libs cjson raylib 2>/dev/null)
 
 # Conan окружение
 CONAN_ENV = . $(PKGCONF)/conanbuild.sh

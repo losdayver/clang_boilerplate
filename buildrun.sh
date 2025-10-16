@@ -1,1 +1,1 @@
-conan install . --output-folder=conan && make && make run
+make && make run

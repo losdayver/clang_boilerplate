@@ -7,7 +7,10 @@
         "module.h": "c",
         "stdlib.h": "c",
         "limits": "c",
-        "raylib.h": "c"
+        "raylib.h": "c",
+        "typeinfo": "c",
+        "math.h": "c",
+        "cjson.h": "c"
     },
     "editor.insertSpaces": true,
     // C/C++ Extension settings
