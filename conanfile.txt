@@ -1,4 +1,5 @@
 [requires]
+glfw/3.4
 raylib/5.5
 
 [generators]

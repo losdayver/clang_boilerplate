@@ -18,6 +18,7 @@ CONAN_ENV = . $(PKGCONF)/conanbuild.sh
 all: $(APP)
 
 $(APP): $(OBJ)
+	@mkdir -p $(dir $(APP))
 	@echo "==> Linking $(APP)..."
 	@$(CONAN_ENV) && gcc $(OBJ) $(CFLAGS) $(LDFLAGS) -o $(APP)
 
